@@ -6,12 +6,13 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
+const profileRoutes = require('./routes/profile');
 
 app.use(express.json());
 // Add this line after other app.use middleware
 const authRoutes = require('./routes/auth');
 app.use('/api/auth', authRoutes);
-
+app.use('/api/profile', profileRoutes);
 app.get('/', (req, res) => {
   res.send('Hello World!');
 });
