@@ -46,7 +46,7 @@ const AuthProvider = ({ children }) => {
       }
 
       try {
-        const res = await axios.get('/api/auth');
+        const res = await axios.get('http://localhost:5000/api/auth');
         dispatch({
           type: 'LOGIN_SUCCESS',
           payload: res.data,
@@ -61,19 +61,27 @@ const AuthProvider = ({ children }) => {
   }, []);
 
   const register = async (formData) => {
-    const res = await axios.post('/api/auth/register', formData);
-    dispatch({
-      type: 'REGISTER_SUCCESS',
-      payload: res.data,
-    });
+    try {
+      const res = await axios.post('http://localhost:5000/api/auth/register', formData);
+      dispatch({
+        type: 'REGISTER_SUCCESS',
+        payload: res.data,
+      });
+    } catch (err) {
+      console.error(err.response.data);
+    }
   };
 
   const login = async (formData) => {
-    const res = await axios.post('/api/auth/login', formData);
-    dispatch({
-      type: 'LOGIN_SUCCESS',
-      payload: res.data,
-    });
+    try {
+      const res = await axios.post('http://localhost:5000/api/auth/login', formData);
+      dispatch({
+        type: 'LOGIN_SUCCESS',
+        payload: res.data,
+      });
+    } catch (err) {
+      console.error(err.response.data);
+    }
   };
 
   const logout = () => {

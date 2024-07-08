@@ -1,4 +1,3 @@
-// Register.js
 import React, { useState, useContext } from 'react';
 import { AuthContext } from '../../contexts/AuthContext';
 

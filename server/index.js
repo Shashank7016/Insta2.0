@@ -1,21 +1,23 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
+const cors = require('cors');
 
 dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-const profileRoutes = require('./routes/profile');
 
 app.use(express.json());
-// Add this line after other app.use middleware
+app.use(cors());
+
+// Import routes
 const authRoutes = require('./routes/auth');
+const profileRoutes = require('./routes/profile');
+
+// Use routes
 app.use('/api/auth', authRoutes);
 app.use('/api/profile', profileRoutes);
-app.get('/', (req, res) => {
-  res.send('Hello World!');
-});
 
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('MongoDB connected'))
