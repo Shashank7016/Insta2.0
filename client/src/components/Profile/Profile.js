@@ -10,13 +10,14 @@ const Profile = () => {
   useEffect(() => {
     const fetchProfile = async () => {
       try {
-        const res = await axios.get('/api/profile/me', {
+        const config = {
           headers: { 'x-auth-token': token }
-        });
+        };
+        const res = await axios.get('http://localhost:5000/api/profile/me', config);
         setProfile(res.data);
         setLoading(false);
       } catch (err) {
-        console.error(err);
+        console.error(err.response ? err.response.data : err.message);
         setLoading(false);
       }
     };
@@ -29,12 +30,13 @@ const Profile = () => {
   const onSubmit = async e => {
     e.preventDefault();
     try {
-      const res = await axios.put('/api/profile/me', profile, {
+      const config = {
         headers: { 'x-auth-token': token }
-      });
+      };
+      const res = await axios.put('http://localhost:5000/api/profile/me', profile, config);
       setProfile(res.data);
     } catch (err) {
-      console.error(err);
+      console.error(err.response ? err.response.data : err.message);
     }
   };
 

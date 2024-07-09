@@ -37,14 +37,9 @@ const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const loadUser = async () => {
-      if (localStorage.token) {
-        axios.defaults.headers.common['x-auth-token'] = localStorage.token;
-      } else {
-        delete axios.defaults.headers.common['x-auth-token'];
-      }
-
+  const loadUser = async () => {
+    if (localStorage.token) {
+      axios.defaults.headers.common['x-auth-token'] = localStorage.token;
       try {
         const res = await axios.get('http://localhost:5000/api/auth');
         dispatch({
@@ -52,35 +47,46 @@ const AuthProvider = ({ children }) => {
           payload: res.data,
         });
       } catch (err) {
+        console.error(err.response ? err.response.data : err.message);
         localStorage.removeItem('token');
+        setLoading(false);
       }
+    } else {
       setLoading(false);
-    };
+    }
+  };
 
+  useEffect(() => {
     loadUser();
   }, []);
 
   const register = async (formData) => {
     try {
       const res = await axios.post('http://localhost:5000/api/auth/register', formData);
-      dispatch({
-        type: 'REGISTER_SUCCESS',
-        payload: res.data,
-      });
+      if (res.data) {
+        dispatch({
+          type: 'REGISTER_SUCCESS',
+          payload: res.data,
+        });
+        loadUser(); // Load user after registration
+      }
     } catch (err) {
-      console.error(err.response.data);
+      console.error(err.response ? err.response.data : err.message);
     }
   };
 
   const login = async (formData) => {
     try {
       const res = await axios.post('http://localhost:5000/api/auth/login', formData);
-      dispatch({
-        type: 'LOGIN_SUCCESS',
-        payload: res.data,
-      });
+      if (res.data) {
+        dispatch({
+          type: 'LOGIN_SUCCESS',
+          payload: res.data,
+        });
+        loadUser(); // Load user after login
+      }
     } catch (err) {
-      console.error(err.response.data);
+      console.error(err.response ? err.response.data : err.message);
     }
   };
 
