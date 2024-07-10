@@ -4,6 +4,8 @@ import Register from './components/Auth/Register';
 import Login from './components/Auth/Login';
 import Profile from './components/Profile/Profile';
 import Navbar from './components/Layout/Navbar';
+import Post from './components/Post/Post';
+import Posts from './components/Post/Posts';
 import { AuthContext, AuthProvider } from './contexts/AuthContext';
 
 const App = () => {
@@ -20,6 +22,8 @@ const App = () => {
           <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/posts" element={<Posts />} />
+          <Route path="/create-post" element={<Post />} />
         </Routes>
       </AuthProvider>  
     </Router>
