@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../../contexts/AuthContext';
+import Post from './Post';
 
 const Posts = () => {
   const [posts, setPosts] = useState([]);
@@ -10,8 +11,8 @@ const Posts = () => {
     const fetchPosts = async () => {
       const config = {
         headers: {
-          'x-auth-token': token
-        }
+          'x-auth-token': token,
+        },
       };
 
       try {
@@ -25,13 +26,14 @@ const Posts = () => {
     fetchPosts();
   }, [token]);
 
+  if (posts.length === 0) {
+    return <div>No posts available. Please create a new post.</div>;
+  }
+
   return (
     <div>
       {posts.map((post) => (
-        <div key={post._id}>
-          <h3>{post.name}</h3>
-          <p>{post.text}</p>
-        </div>
+        <Post key={post._id} post={post} />
       ))}
     </div>
   );
