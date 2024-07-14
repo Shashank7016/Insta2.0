@@ -17,6 +17,9 @@ const Navbar = () => {
         <Link to="/profile">Profile</Link>
       </li>
       <li>
+        <Link to="/notifications">Notifications</Link>
+      </li>
+      <li>
         <a href="#!" onClick={logout}>
           Logout
         </a>

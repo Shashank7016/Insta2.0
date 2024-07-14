@@ -7,6 +7,7 @@ import Navbar from './components/Layout/Navbar';
 import Post from './components/Post/Post';
 import Posts from './components/Post/Posts';
 import CreatePost from './components/Post/CreatePost';
+import Notifications from './components/Notifications';
 import { AuthContext, AuthProvider } from './contexts/AuthContext';
 
 const App = () => {
@@ -25,6 +26,7 @@ const App = () => {
           <Route path="/profile" element={<Profile />} />
           <Route path="/posts" element={<Posts />} />
           <Route path="/create-post" element={<CreatePost />} />
+          <Route path="/notifications" element={<Notifications />} />
         </Routes>
       </AuthProvider>  
     </Router>

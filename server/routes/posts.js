@@ -3,6 +3,7 @@ const { check, validationResult } = require('express-validator');
 const auth = require('../middleware/auth');
 const Post = require('../models/Post');
 const User = require('../models/User');
+const Notification = require('../models/Notification');
 
 const router = express.Router();
 
@@ -58,7 +59,6 @@ router.put('/like/:id', auth, async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
 
-    // Check if the post has already been liked
     if (post.likes.some((like) => like.user.toString() === req.user.id)) {
       return res.status(400).json({ msg: 'Post already liked' });
     }
@@ -66,6 +66,16 @@ router.put('/like/:id', auth, async (req, res) => {
     post.likes.unshift({ user: req.user.id });
 
     await post.save();
+
+    // Create a notification
+    const newNotification = new Notification({
+      user: post.user,
+      type: 'like',
+      post: post._id,
+      text: `${req.user.name} liked your post`,
+    });
+
+    await newNotification.save();
 
     res.json(post.likes);
   } catch (err) {
@@ -126,7 +136,14 @@ router.post(
       post.comments.unshift(newComment);
 
       await post.save();
-
+       // Create a notification
+       const newNotification = new Notification({
+        user: post.user,
+        type: 'comment',
+        post: post._id,
+        text: `${user.name} commented on your post`,
+      });
+      await newNotification.save();
       res.json(post.comments);
     } catch (err) {
       console.error(err.message);
