@@ -24,7 +24,7 @@ router.post(
 
       const newPost = new Post({
         text: req.body.text,
-        name: user.name,
+        name: user.username,
         avatar: user.avatar,
         user: req.user.id,
       });
@@ -58,6 +58,7 @@ router.get('/', auth, async (req, res) => {
 router.put('/like/:id', auth, async (req, res) => {
   try {
     const post = await Post.findById(req.params.id);
+    const user = await User.findById(req.user.id);
 
     if (post.likes.some((like) => like.user.toString() === req.user.id)) {
       return res.status(400).json({ msg: 'Post already liked' });
@@ -72,7 +73,7 @@ router.put('/like/:id', auth, async (req, res) => {
       user: post.user,
       type: 'like',
       post: post._id,
-      text: `${req.user.name} liked your post`,
+      text: `${user.username} liked your post`,
     });
 
     await newNotification.save();
@@ -112,9 +113,9 @@ router.put('/unlike/:id', auth, async (req, res) => {
 
 // @route    POST api/posts/comment/:id
 // @desc     Comment on a post
-// @access   Private
-router.post(
-  '/comment/:id',
+// @access   Privaterouter.post(
+  router.post(
+    '/comment/:id',
   [auth, [check('text', 'Text is required').not().isEmpty()]],
   async (req, res) => {
     const errors = validationResult(req);
@@ -128,7 +129,7 @@ router.post(
 
       const newComment = {
         text: req.body.text,
-        name: user.name,
+        name: user.username,
         avatar: user.avatar,
         user: req.user.id,
       };
@@ -136,14 +137,17 @@ router.post(
       post.comments.unshift(newComment);
 
       await post.save();
-       // Create a notification
-       const newNotification = new Notification({
+
+      // Create a notification
+      const newNotification = new Notification({
         user: post.user,
         type: 'comment',
         post: post._id,
-        text: `${user.name} commented on your post`,
+        text: `${user.username} commented on your post`,
       });
+
       await newNotification.save();
+
       res.json(post.comments);
     } catch (err) {
       console.error(err.message);
