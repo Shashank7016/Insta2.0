@@ -49,11 +49,11 @@ const AuthProvider = ({ children }) => {
       } catch (err) {
         console.error(err.response ? err.response.data : err.message);
         localStorage.removeItem('token');
-        setLoading(false);
+        delete axios.defaults.headers.common['x-auth-token'];
+        dispatch({ type: 'LOGOUT' });
       }
-    } else {
-      setLoading(false);
     }
+    setLoading(false);
   };
 
   useEffect(() => {

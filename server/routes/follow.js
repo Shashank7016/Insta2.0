@@ -16,7 +16,7 @@ router.put('/follow/:id', auth, async (req, res) => {
       return res.status(404).json({ msg: 'User not found' });
     }
 
-    if (userToFollow.followers.includes(req.user.id)) {
+    if (userToFollow.followers.some(follower => follower.toString() === req.user.id)) {
       return res.status(400).json({ msg: 'You are already following this user' });
     }
 
@@ -26,7 +26,7 @@ router.put('/follow/:id', auth, async (req, res) => {
     await userToFollow.save();
     await currentUser.save();
 
-    res.json({ msg: 'User followed successfully' });
+    res.json(currentUser.following); // Return updated following list
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server error');
@@ -45,7 +45,7 @@ router.put('/unfollow/:id', auth, async (req, res) => {
       return res.status(404).json({ msg: 'User not found' });
     }
 
-    if (!userToUnfollow.followers.includes(req.user.id)) {
+    if (!userToUnfollow.followers.some(follower => follower.toString() === req.user.id)) {
       return res.status(400).json({ msg: 'You are not following this user' });
     }
 
@@ -59,7 +59,7 @@ router.put('/unfollow/:id', auth, async (req, res) => {
     await userToUnfollow.save();
     await currentUser.save();
 
-    res.json({ msg: 'User unfollowed successfully' });
+    res.json(currentUser.following); // Return updated following list
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server error');

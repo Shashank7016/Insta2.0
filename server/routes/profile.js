@@ -4,7 +4,7 @@ const auth = require('../middleware/auth');
 
 const router = express.Router();
 
-// Get user profile
+// Get current user's profile
 router.get('/me', auth, async (req, res) => {
   try {
     const user = await User.findById(req.user.id).select('-password');
@@ -18,7 +18,7 @@ router.get('/me', auth, async (req, res) => {
   }
 });
 
-// Update user profile
+// Update current user's profile
 router.put('/me', auth, async (req, res) => {
   const { username, email } = req.body;
   const profileFields = {};
@@ -36,6 +36,20 @@ router.put('/me', auth, async (req, res) => {
       return res.json(user);
     }
     res.status(404).json({ msg: 'User not found' });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
+// Get user profile by ID
+router.get('/:id', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).select('-password');
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+    res.json(user);
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server error');

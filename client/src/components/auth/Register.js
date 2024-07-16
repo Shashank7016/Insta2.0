@@ -3,6 +3,7 @@ import { AuthContext } from '../../contexts/AuthContext';
 
 const Register = () => {
   const [formData, setFormData] = useState({
+    name: '',
     username: '',
     email: '',
     password: ''
@@ -10,7 +11,7 @@ const Register = () => {
 
   const { register } = useContext(AuthContext);
 
-  const { username, email, password } = formData;
+  const { name, username, email, password } = formData;
 
   const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
 
@@ -21,6 +22,10 @@ const Register = () => {
 
   return (
     <form onSubmit={onSubmit}>
+      <div>
+        <label>Name</label>
+        <input type="text" name="name" value={name} onChange={onChange} required />
+      </div>
       <div>
         <label>Username</label>
         <input type="text" name="username" value={username} onChange={onChange} required />

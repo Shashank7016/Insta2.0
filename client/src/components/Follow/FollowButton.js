@@ -1,10 +1,29 @@
-import React, { useState, useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../../contexts/AuthContext';
 
 const FollowButton = ({ userId }) => {
-  const { token } = useContext(AuthContext);
+  const { token, user } = useContext(AuthContext);
   const [isFollowing, setIsFollowing] = useState(false);
+
+  useEffect(() => {
+    const checkFollowingStatus = async () => {
+      const config = {
+        headers: {
+          'x-auth-token': token,
+        },
+      };
+
+      try {
+        const res = await axios.get(`http://localhost:5000/api/profile/${user._id}`, config);
+        setIsFollowing(res.data.following.some(follow => follow.user.toString() === userId));
+      } catch (err) {
+        console.error(err.response ? err.response.data : err.message);
+      }
+    };
+
+    checkFollowingStatus();
+  }, [token, user._id, userId]);
 
   const followUser = async () => {
     const config = {
@@ -14,10 +33,10 @@ const FollowButton = ({ userId }) => {
     };
 
     try {
-      await axios.put(`http://localhost:5000/api/follow/${userId}`, {}, config);
+      await axios.put(`http://localhost:5000/api/follow/follow/${userId}`, {}, config);
       setIsFollowing(true);
     } catch (err) {
-      console.error(err.response.data);
+      console.error(err.response ? err.response.data : err.message);
     }
   };
 
@@ -29,17 +48,21 @@ const FollowButton = ({ userId }) => {
     };
 
     try {
-      await axios.put(`http://localhost:5000/api/unfollow/${userId}`, {}, config);
+      await axios.put(`http://localhost:5000/api/follow/unfollow/${userId}`, {}, config);
       setIsFollowing(false);
     } catch (err) {
-      console.error(err.response.data);
+      console.error(err.response ? err.response.data : err.message);
     }
   };
 
   return (
-    <button onClick={isFollowing ? unfollowUser : followUser}>
-      {isFollowing ? 'Unfollow' : 'Follow'}
-    </button>
+    <>
+      {isFollowing ? (
+        <button onClick={unfollowUser}>Unfollow</button>
+      ) : (
+        <button onClick={followUser}>Follow</button>
+      )}
+    </>
   );
 };
 

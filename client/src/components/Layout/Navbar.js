@@ -3,18 +3,18 @@ import { Link } from 'react-router-dom';
 import { AuthContext } from '../../contexts/AuthContext';
 
 const Navbar = () => {
-  const { isAuthenticated, logout, loading } = useContext(AuthContext);
+  const { isAuthenticated, logout, loading, user } = useContext(AuthContext);
 
   const authLinks = (
     <ul>
-       <li>
+      <li>
         <Link to="/posts">Posts</Link>
       </li>
       <li>
         <Link to="/create-post">Create Post</Link>
       </li>
       <li>
-        <Link to="/profile">Profile</Link>
+        <Link to={`/profile/${user ? user._id : ''}`}>Profile</Link> {/* Ensure this is correct */}
       </li>
       <li>
         <Link to="/notifications">Notifications</Link>
