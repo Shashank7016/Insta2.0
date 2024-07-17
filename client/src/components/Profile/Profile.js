@@ -6,16 +6,16 @@ import FollowButton from '../Follow/FollowButton';
 
 const Profile = () => {
   const { token, user } = useContext(AuthContext);
-  const { id } = useParams(); // Use useParams to get the user ID from the URL
+  const { id } = useParams();
   const [profileData, setProfileData] = useState({
     name: '',
     email: '',
     username: '',
+    followerCount: 0,
+    followingCount: 0,
   });
 
   useEffect(() => {
-    console.log('Profile ID:', id); // Add this line to debug
-
     const fetchProfile = async () => {
       const config = {
         headers: {
@@ -31,7 +31,7 @@ const Profile = () => {
       }
     };
 
-    if (id) { // Only fetch profile if id is available
+    if (id) {
       fetchProfile();
     }
   }, [token, id]);
@@ -59,29 +59,33 @@ const Profile = () => {
     <div>
       <h1>{profileData.username}'s Profile</h1>
       {user && user._id !== id && (
-        <FollowButton userId={id} /> // Ensure this line is correct
+        <FollowButton userId={id} />
       )}
-      <form onSubmit={onSubmit}>
-        <div>
-          <label>Name</label>
-          <input
-            type="text"
-            name="name"
-            value={profileData.name}
-            onChange={onChange}
-          />
-        </div>
-        <div>
-          <label>Email</label>
-          <input
-            type="email"
-            name="email"
-            value={profileData.email}
-            onChange={onChange}
-          />
-        </div>
-        <button type="submit">Update Profile</button>
-      </form>
+      <p>Followers: {profileData.followerCount}</p>
+      <p>Following: {profileData.followingCount}</p>
+      {user && user._id === id && (
+        <form onSubmit={onSubmit}>
+          <div>
+            <label>Name</label>
+            <input
+              type="text"
+              name="name"
+              value={profileData.name}
+              onChange={onChange}
+            />
+          </div>
+          <div>
+            <label>Email</label>
+            <input
+              type="email"
+              name="email"
+              value={profileData.email}
+              onChange={onChange}
+            />
+          </div>
+          <button type="submit">Update Profile</button>
+        </form>
+      )}
     </div>
   );
 };

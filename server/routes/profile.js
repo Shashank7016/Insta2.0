@@ -5,13 +5,15 @@ const auth = require('../middleware/auth');
 const router = express.Router();
 
 // Get current user's profile
-router.get('/me', auth, async (req, res) => {
+router.get('/:id', auth, async (req, res) => {
   try {
-    const user = await User.findById(req.user.id).select('-password');
+    const user = await User.findById(req.params.id).select('-password');
     if (!user) {
       return res.status(404).json({ msg: 'User not found' });
     }
-    res.json(user);
+    const followerCount = user.followers.length;
+    const followingCount = user.following.length;
+    res.json({ ...user.toObject(), followerCount, followingCount });
   } catch (err) {
     console.error(err.message);
     res.status(500).send('Server error');
@@ -41,6 +43,7 @@ router.put('/me', auth, async (req, res) => {
     res.status(500).send('Server error');
   }
 });
+
 
 // Get user profile by ID
 router.get('/:id', auth, async (req, res) => {
