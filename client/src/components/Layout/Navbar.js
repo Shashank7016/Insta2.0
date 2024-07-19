@@ -27,6 +27,12 @@ const Navbar = () => {
         <Link to="/search">Search</Link>
       </li>
       <li>
+        <Link to="/messages">Messages</Link>
+      </li>
+      <li>
+        <Link to="/users">Users</Link>
+      </li>
+      <li>
         <a href="#!" onClick={logout}>
           Logout
         </a>

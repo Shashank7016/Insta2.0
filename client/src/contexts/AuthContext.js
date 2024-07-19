@@ -14,6 +14,7 @@ const authReducer = (state, action) => {
     case 'LOGIN_SUCCESS':
     case 'REGISTER_SUCCESS':
       localStorage.setItem('token', action.payload.token);
+      localStorage.setItem('user', JSON.stringify(action.payload.user));
       return {
         ...state,
         isAuthenticated: true,
@@ -22,6 +23,7 @@ const authReducer = (state, action) => {
       };
     case 'LOGOUT':
       localStorage.removeItem('token');
+      localStorage.removeItem('user');
       return {
         ...state,
         isAuthenticated: false,
@@ -44,17 +46,21 @@ const AuthProvider = ({ children }) => {
         const res = await axios.get('http://localhost:5000/api/auth');
         dispatch({
           type: 'LOGIN_SUCCESS',
-          payload: res.data,
+          payload: { user: res.data, token: localStorage.token },
         });
       } catch (err) {
         console.error(err.response ? err.response.data : err.message);
         localStorage.removeItem('token');
+        localStorage.removeItem('user');
         delete axios.defaults.headers.common['x-auth-token'];
         dispatch({ type: 'LOGOUT' });
+        setLoading(false);
       }
     }
     setLoading(false);
+    
   };
+  
 
   useEffect(() => {
     loadUser();

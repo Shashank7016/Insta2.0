@@ -9,6 +9,8 @@ import Posts from './components/Post/Posts';
 import CreatePost from './components/Post/CreatePost';
 import Notifications from './components/Notifications';
 import Search from './components/Search/Search';
+import MessageList from './components/Messages/MessageList';
+import UserList from './components/Users/UserList';
 import { AuthContext, AuthProvider } from './contexts/AuthContext';
 
 const App = () => {
@@ -29,6 +31,8 @@ const App = () => {
           <Route path="/create-post" element={<CreatePost />} />
           <Route path="/notifications" element={<Notifications />} />
           <Route path="/search" element={<Search />} />
+          <Route path="/messages/:recipientId" element={<MessageList />} />
+          <Route path="/users" element={<UserList />} />
         </Routes>
       </AuthProvider>  
     </Router>

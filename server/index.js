@@ -18,6 +18,8 @@ const postRoutes = require('./routes/posts');
 const notificationRoutes = require('./routes/notifications');
 const followRoutes = require('./routes/follow');
 const searchRoutes = require('./routes/search');
+const messageRoutes = require('./routes/messages');
+const userRoutes = require('./routes/users');
 
 // Use routes
 app.use('/api/auth', authRoutes);
@@ -26,6 +28,9 @@ app.use('/api/posts', postRoutes);
 app.use('/api/notifications', notificationRoutes);
 app.use('/api/follow', followRoutes);
 app.use('/api/search', searchRoutes);
+app.use('/api/messages', messageRoutes);
+app.use('/api/users', userRoutes);
+
 
 mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('MongoDB connected'))
