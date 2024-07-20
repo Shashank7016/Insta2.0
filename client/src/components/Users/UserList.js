@@ -4,7 +4,7 @@ import { AuthContext } from '../../contexts/AuthContext';
 import { Link } from 'react-router-dom';
 
 const UserList = () => {
-  const { token } = useContext(AuthContext);
+  const { token, user } = useContext(AuthContext);
   const [users, setUsers] = useState([]);
 
   useEffect(() => {
@@ -30,11 +30,13 @@ const UserList = () => {
     <div>
       <h1>All Users</h1>
       <ul>
-        {users.map((user) => (
-          <li key={user._id}>
-            <Link to={`/messages/${user._id}`}>{user.username}</Link>
-          </li>
-        ))}
+        {users
+          .filter((u) => u._id !== user._id) // Filter out the current user
+          .map((u) => (
+            <li key={u._id}>
+              <Link to={`/messages/${u._id}`}>{u.username}</Link>
+            </li>
+          ))}
       </ul>
     </div>
   );

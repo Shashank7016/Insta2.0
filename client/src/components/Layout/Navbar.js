@@ -18,7 +18,7 @@ const Navbar = () => {
         <Link to="/create-post">Create Post</Link>
       </li>
       <li>
-        <Link to={`/profile/${user && user._id}`}>Profile</Link>
+         <Link to={`/profile/${user ? user._id : ''}`}>Profile</Link>
       </li>
       <li>
         <Link to="/notifications">Notifications</Link>
@@ -28,9 +28,6 @@ const Navbar = () => {
       </li>
       <li>
         <Link to="/messages">Messages</Link>
-      </li>
-      <li>
-        <Link to="/users">Users</Link>
       </li>
       <li>
         <a href="#!" onClick={logout}>
