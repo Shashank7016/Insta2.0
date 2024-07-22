@@ -20,7 +20,7 @@ const MessageList = () => {
 
       try {
         const res = await axios.get(`http://localhost:5000/api/messages/${recipientId}`, config);
-        setMessages(res.data);
+        setMessages(res.data.reverse()); // Reverse to have the latest message at the bottom
       } catch (err) {
         console.error(err.response ? err.response.data : err.message);
       }
@@ -60,7 +60,7 @@ const MessageList = () => {
 
     try {
       const res = await axios.post('http://localhost:5000/api/messages', { recipientId, text }, config);
-      setMessages([res.data, ...messages]);
+      setMessages((prevMessages) => [...prevMessages, res.data]);
       setText('');
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
@@ -69,7 +69,7 @@ const MessageList = () => {
 
   const messageStyle = (sender) => ({
     backgroundColor: sender === user._id ? '#dcf8c6' : '#ffffff',
-    color: sender === user._id ? '#000000' : '#000000',
+    color: '#000000',
     padding: '10px',
     borderRadius: '20px',
     margin: '5px 0',
@@ -83,16 +83,18 @@ const MessageList = () => {
     display: 'flex',
     flexDirection: 'column',
     padding: '20px',
+    overflowY: 'auto',
+    height: '400px', // Adjust as needed
   };
 
   return (
-    <div style={containerStyle}>
-      <h1>Messages with {recipient ? recipient.username : 'Loading...'}</h1>
-      <div style={{ display: 'flex', flexDirection: 'column', marginBottom: '20px' }}>
+    <div>
+      <h1>Messages with {recipient ? recipient.name : 'Loading...'}</h1>
+      <div style={containerStyle}>
         {messages.map((message) => (
           <div key={message._id} style={messageStyle(message.sender)}>
             <p>
-              <strong>{message.sender === user._id ? 'You' : recipient ? recipient.username : 'Them'}:</strong> {message.text}
+              <strong>{message.sender === user._id ? 'You' : recipient ? recipient.name : 'Them'}:</strong> {message.text}
             </p>
           </div>
         ))}
