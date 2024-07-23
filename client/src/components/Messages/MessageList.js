@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../../contexts/AuthContext';
 import { useParams } from 'react-router-dom';
+import './MessageList.css'; // Ensure you have a CSS file for additional styling
 
 const MessageList = () => {
   const { token, user } = useContext(AuthContext);
@@ -67,39 +68,40 @@ const MessageList = () => {
     }
   };
 
-  const messageStyle = (sender) => ({
-    backgroundColor: sender === user._id ? '#dcf8c6' : '#ffffff',
-    color: '#000000',
-    padding: '10px',
-    borderRadius: '20px',
-    margin: '5px 0',
-    maxWidth: '60%',
-    display: 'inline-block',
-    alignSelf: sender === user._id ? 'flex-end' : 'flex-start',
-    marginBottom: '10px',
-  });
-
-  const containerStyle = {
-    display: 'flex',
-    flexDirection: 'column',
-    padding: '20px',
-    overflowY: 'auto',
-    height: '400px', // Adjust as needed
+  const formatTime = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   };
 
+  const formatDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString([], { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  };
+
+  let lastDate = '';
+
   return (
-    <div>
-      <h1>Messages with {recipient ? recipient.name : 'Loading...'}</h1>
-      <div style={containerStyle}>
-        {messages.map((message) => (
-          <div key={message._id} style={messageStyle(message.sender)}>
-            <p>
-              <strong>{message.sender === user._id ? 'You' : recipient ? recipient.name : 'Them'}:</strong> {message.text}
-            </p>
-          </div>
-        ))}
+    <div className="message-container">
+      <h1>Messages with {recipient ? recipient.username : 'Loading...'}</h1>
+      <div className="messages">
+        {messages.map((message) => {
+          const currentDate = formatDate(message.date);
+          const showDate = currentDate !== lastDate;
+          lastDate = currentDate;
+          return (
+            <React.Fragment key={message._id}>
+              {showDate && <div className="date-separator">{currentDate}</div>}
+              <div className={`message ${message.sender === user._id ? 'sent' : 'received'}`}>
+                <p>
+                  <strong>{message.sender === user._id ? 'You' : recipient ? recipient.username : 'Them'}:</strong> {message.text}
+                </p>
+                <span className="message-time">{formatTime(message.date)}</span>
+              </div>
+            </React.Fragment>
+          );
+        })}
       </div>
-      <form onSubmit={onSubmit} style={{ marginTop: '20px' }}>
+      <form onSubmit={onSubmit} className="message-form">
         <textarea
           name="text"
           cols="30"
@@ -108,11 +110,8 @@ const MessageList = () => {
           value={text}
           onChange={onChange}
           required
-          style={{ width: '100%', padding: '10px', borderRadius: '10px', border: '1px solid #ccc' }}
         />
-        <button type="submit" style={{ marginTop: '10px', padding: '10px 20px', borderRadius: '10px', backgroundColor: '#007bff', color: '#fff', border: 'none' }}>
-          Send
-        </button>
+        <button type="submit">Send</button>
       </form>
     </div>
   );

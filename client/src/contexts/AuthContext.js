@@ -1,5 +1,6 @@
 import React, { createContext, useReducer, useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const initialState = {
   isAuthenticated: false,
@@ -75,6 +76,7 @@ const AuthProvider = ({ children }) => {
           payload: res.data,
         });
         loadUser(); // Load user after registration
+        window.location.href = `/profile/${res.data.user._id}`;
       }
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
@@ -90,6 +92,7 @@ const AuthProvider = ({ children }) => {
           payload: res.data,
         });
         loadUser(); // Load user after login
+        window.location.href = `/profile/${res.data.user._id}`;
       }
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
