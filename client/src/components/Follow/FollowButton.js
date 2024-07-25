@@ -16,13 +16,15 @@ const FollowButton = ({ userId }) => {
 
       try {
         const res = await axios.get(`http://localhost:5000/api/profile/${user._id}`, config);
-        setIsFollowing(res.data.following.some(follow => follow.user.toString() === userId));
+        setIsFollowing(res.data.following.some(follow => follow.toString() === userId));
       } catch (err) {
         console.error(err.response ? err.response.data : err.message);
       }
     };
 
-    checkFollowingStatus();
+    if (user._id && userId) {
+      checkFollowingStatus();
+    }
   }, [token, user._id, userId]);
 
   const followUser = async () => {
@@ -33,7 +35,7 @@ const FollowButton = ({ userId }) => {
     };
 
     try {
-      await axios.put(`http://localhost:5000/api/follow/follow/${userId}`, {}, config);
+      const res = await axios.put(`http://localhost:5000/api/follow/follow/${userId}`, {}, config);
       setIsFollowing(true);
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);
@@ -48,7 +50,7 @@ const FollowButton = ({ userId }) => {
     };
 
     try {
-      await axios.put(`http://localhost:5000/api/follow/unfollow/${userId}`, {}, config);
+      const res = await axios.put(`http://localhost:5000/api/follow/unfollow/${userId}`, {}, config);
       setIsFollowing(false);
     } catch (err) {
       console.error(err.response ? err.response.data : err.message);

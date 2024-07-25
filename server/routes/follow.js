@@ -4,6 +4,26 @@ const User = require('../models/User');
 
 const router = express.Router();
 
+// @route    GET api/follow/status/:id
+// @desc     Check if the current user is following another user
+// @access   Private
+router.get('/status/:id', auth, async (req, res) => {
+  try {
+    const userToCheck = await User.findById(req.params.id);
+    const currentUser = await User.findById(req.user.id);
+
+    if (!userToCheck) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+
+    const isFollowing = currentUser.following.includes(req.params.id);
+    res.json({ isFollowing });
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
 // @route    PUT api/follow/:id
 // @desc     Follow a user
 // @access   Private
