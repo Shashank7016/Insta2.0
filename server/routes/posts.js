@@ -4,40 +4,62 @@ const auth = require('../middleware/auth');
 const Post = require('../models/Post');
 const User = require('../models/User');
 const Notification = require('../models/Notification');
+const multer = require('multer');
+const path = require('path');
 
 const router = express.Router();
+
+// Configure Multer
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+    cb(null, 'uploads/');
+  },
+  filename: function (req, file, cb) {
+    cb(null, file.fieldname + '-' + Date.now() + path.extname(file.originalname));
+  },
+});
+
+const upload = multer({
+  storage: storage,
+  limits: { fileSize: 10000000 }, // 10MB limit
+  fileFilter: function (req, file, cb) {
+    const filetypes = /jpeg|jpg|png|mp4|mov|avi/;
+    const mimetype = filetypes.test(file.mimetype);
+    const extname = filetypes.test(path.extname(file.originalname).toLowerCase());
+    if (mimetype && extname) {
+      return cb(null, true);
+    } else {
+      cb('Error: File upload only supports the following filetypes - ' + filetypes);
+    }
+  },
+}).single('media');
 
 // @route    POST api/posts
 // @desc     Create a post
 // @access   Private
-router.post(
-  '/',
-  [auth, [check('text', 'Text is required').not().isEmpty()]],
-  async (req, res) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      return res.status(400).json({ errors: errors.array() });
-    }
-
-    try {
-      const user = await User.findById(req.user.id).select('-password');
-
-      const newPost = new Post({
-        text: req.body.text,
-        name: user.username,
-        avatar: user.avatar,
-        user: req.user.id,
-      });
-
-      const post = await newPost.save();
-
-      res.json(post);
-    } catch (err) {
-      console.error(err.message);
-      res.status(500).send('Server error');
-    }
+router.post('/', [auth, upload, [check('text', 'Text is required').not().isEmpty()]], async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json({ errors: errors.array() });
   }
-);
+
+  try {
+    const user = await User.findById(req.user.id).select('-password');
+    const newPost = new Post({
+      text: req.body.text,
+      name: user.username,
+      avatar: user.avatar,
+      user: req.user.id,
+      media: req.file ? req.file.path : null,
+    });
+
+    const post = await newPost.save();
+    res.json(post);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
 
 // @route    GET api/posts
 // @desc     Get all posts

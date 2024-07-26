@@ -14,6 +14,9 @@ const PostSchema = new mongoose.Schema({
   },
   avatar: {
     type: String
+  }, 
+  media: {
+    type: String // Path to the uploaded image or video
   },
   likes: [
     {

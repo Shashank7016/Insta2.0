@@ -76,6 +76,12 @@ const Post = ({ post = {} }) => {
     <div>
       <h3>{post.name}</h3>
       <p>{post.text}</p>
+      {post.media && (
+        post.media.endsWith('.mp4') || post.media.endsWith('.mov') || post.media.endsWith('.avi') ?
+          <video src={`http://localhost:5000/${post.media}`} controls /> :
+          <img src={`http://localhost:5000/${post.media}`} alt="media" />
+      )}
+      <div>
       <button onClick={likePost}>Like</button>
       <button onClick={unlikePost}>Unlike</button>
       <p>{likes.length} likes</p>
@@ -91,6 +97,7 @@ const Post = ({ post = {} }) => {
         />
         <button type="submit">Submit</button>
       </form>
+      </div>
       <div>
         {comments.map((comment) => (
           <div key={comment._id}>

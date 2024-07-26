@@ -33,7 +33,15 @@ const Posts = () => {
   return (
     <div>
       {posts.map((post) => (
-        <Post key={post._id} post={post} />
+        <Post key={post._id} post={post}>
+          <h3>{post.name}</h3>
+          <p>{post.text}</p>
+          {post.media && (
+            post.media.endsWith('.mp4') || post.media.endsWith('.mov') || post.media.endsWith('.avi') ?
+              <video src={`http://localhost:5000/${post.media}`} controls /> :
+              <img src={`http://localhost:5000/${post.media}`} alt="media" />
+          )}
+        </Post>
       ))}
     </div>
   );
