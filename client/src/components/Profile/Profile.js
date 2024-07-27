@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import axios from 'axios';
 import { AuthContext } from '../../contexts/AuthContext';
-import { useParams } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import FollowButton from '../Follow/FollowButton';
 
 const Profile = () => {
@@ -61,8 +61,12 @@ const Profile = () => {
       {user && user._id !== id && (
         <FollowButton userId={id} />
       )}
-      <p>Followers: {profileData.followerCount}</p>
-      <p>Following: {profileData.followingCount}</p>
+       <p>
+        Followers: <Link to={`/profile/${id}/followers`}>{profileData.followerCount}</Link>
+      </p>
+      <p>
+        Following: <Link to={`/profile/${id}/following`}>{profileData.followingCount}</Link>
+      </p>
       {user && user._id === id && (
         <form onSubmit={onSubmit}>
           <div>

@@ -12,6 +12,8 @@ import Search from './components/Search/Search';
 import MessageList from './components/Messages/MessageList';
 import UserList from './components/Users/UserList';
 import PageLayout from './components/Layout/PageLayout';
+import FollowersList from './components/Profile/FollowersList';
+import FollowingList from './components/Profile/FollowingList';
 import { AuthContext, AuthProvider } from './contexts/AuthContext';
 
 const App = () => {
@@ -46,6 +48,8 @@ const ProtectedRoutes = () => {
       <AnimatePresence mode="wait">
       <Routes>
         <Route path="/profile/:id" element={<PageLayout><Profile /></PageLayout>} />
+        <Route path="/profile/:id/followers" element={<PageLayout><FollowersList /></PageLayout>} />
+        <Route path="/profile/:id/following" element={<PageLayout><FollowingList /></PageLayout>} />
         <Route path="/posts" element={<PageLayout><Posts /></PageLayout>} />
         <Route path="/create-post" element={<PageLayout><CreatePost /></PageLayout>} />
         <Route path="/notifications" element={<PageLayout><Notifications /></PageLayout>} />

@@ -20,6 +20,34 @@ router.get('/:id', auth, async (req, res) => {
   }
 });
 
+// Get followers of a user
+router.get('/:id/followers', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).populate('followers', 'username');
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+    res.json(user.followers);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
+// Get following of a user
+router.get('/:id/following', auth, async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id).populate('following', 'username');
+    if (!user) {
+      return res.status(404).json({ msg: 'User not found' });
+    }
+    res.json(user.following);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send('Server error');
+  }
+});
+
 // Update current user's profile
 router.put('/me', auth, async (req, res) => {
   const { username, email } = req.body;

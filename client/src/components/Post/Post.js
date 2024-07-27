@@ -3,7 +3,7 @@ import axios from 'axios';
 import { AuthContext } from '../../contexts/AuthContext';
 
 const Post = ({ post = {} }) => {
-  const { token } = useContext(AuthContext);
+  const { token ,user} = useContext(AuthContext);
   const [text, setText] = useState('');
   const [comments, setComments] = useState(post.comments || []);
   const [likes, setLikes] = useState(post.likes || []);
@@ -82,9 +82,13 @@ const Post = ({ post = {} }) => {
           <img src={`http://localhost:5000/${post.media}`} alt="media" />
       )}
       <div>
+      {likes.some((like) => like.user === user._id) ? (
+        <button onClick={unlikePost}>Unlike</button>
+      ):(
       <button onClick={likePost}>Like</button>
-      <button onClick={unlikePost}>Unlike</button>
+    )}
       <p>{likes.length} likes</p>
+      </div>
       <form onSubmit={addComment}>
         <textarea
           name="text"
@@ -97,7 +101,7 @@ const Post = ({ post = {} }) => {
         />
         <button type="submit">Submit</button>
       </form>
-      </div>
+      
       <div>
         {comments.map((comment) => (
           <div key={comment._id}>
