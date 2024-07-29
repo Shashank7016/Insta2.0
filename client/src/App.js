@@ -14,6 +14,7 @@ import UserList from './components/Users/UserList';
 import PageLayout from './components/Layout/PageLayout';
 import FollowersList from './components/Profile/FollowersList';
 import FollowingList from './components/Profile/FollowingList';
+import Explore from './components/Explore/Explore';
 import { AuthContext, AuthProvider } from './contexts/AuthContext';
 
 const App = () => {
@@ -56,6 +57,7 @@ const ProtectedRoutes = () => {
         <Route path="/search" element={<PageLayout><Search /></PageLayout>} />
         <Route path="/messages/:recipientId" element={<PageLayout><MessageList /></PageLayout>} />
         <Route path="/messages" element={<PageLayout><UserList /></PageLayout>} />
+        <Route path="/explore" element={<PageLayout><Explore /></PageLayout>} /> 
         <Route path="*" element={<Navigate to="/profile" />} />
       </Routes>
       </AnimatePresence>

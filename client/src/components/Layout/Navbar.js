@@ -30,6 +30,9 @@ const Navbar = () => {
         <Link to="/messages">Messages</Link>
       </li>
       <li>
+      <Link to="/explore">Explore</Link> 
+    </li>
+      <li>
         <a href="#!" onClick={logout}>
           Logout
         </a>
