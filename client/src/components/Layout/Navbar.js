@@ -31,7 +31,11 @@ const Navbar = () => {
       </li>
       <li>
       <Link to="/explore">Explore</Link> 
-    </li>
+      </li>
+      <li>
+      <Link to="/stories">Stories</Link> 
+      </li>
+
       <li>
         <a href="#!" onClick={logout}>
           Logout
